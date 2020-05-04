@@ -4,8 +4,8 @@ defmodule YatzyApi.Application do
   @moduledoc false
 
   use Application
-  alias YatzyApi.Web.Router
   alias Vapor.Provider.Env
+  alias YatzyApi.Web.Router
 
   def start(_type, _args) do
     providers = [
@@ -15,7 +15,9 @@ defmodule YatzyApi.Application do
         ]
       }
     ]
+
     config = Vapor.load!(providers)
+
     children = [
       {Plug.Cowboy, scheme: :http, plug: Router, options: [port: config.port]}
     ]
