@@ -25,6 +25,7 @@ defmodule YatzyApi.MixProject do
     [
       {:credo, "~> 1.3", only: [:dev], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.0"},
       {:vapor, "~> 0.8"}
     ]
