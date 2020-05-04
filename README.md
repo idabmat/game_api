@@ -1,21 +1,25 @@
+![CI](https://github.com/idabmat/yatzy_api/workflows/CI/badge.svg)
+
 # YatzyApi
 
-**TODO: Add description**
+An API for playing Yatzy.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `yatzy_api` to your list of dependencies in `mix.exs`:
+### Dependencies
 
-```elixir
-def deps do
-  [
-    {:yatzy_api, "~> 0.1.0"}
-  ]
-end
-```
+- Elixir ~> 1.10
+- Erlang ~> 22.2
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/yatzy_api](https://hexdocs.pm/yatzy_api).
+### Running Locally
 
+`mix deps.get` and `mix run --no-halt` should be enough.
+
+Then visit [localhost:4000](http://localhost:4000).
+
+## Deployment
+
+The [master](https://github.com/idabmat/yatzy_api/tree/master) branch is automatically deployed to
+[Heroku](https://floating-fortress-50078.herokuapp.com/) after tests tests pass.
+
+Demo: https://floating-fortress-50078.herokuapp.com/
