@@ -5,10 +5,19 @@ defmodule YatzyApi.Application do
 
   use Application
   alias YatzyApi.Web.Router
+  alias Vapor.Provider.Env
 
   def start(_type, _args) do
+    providers = [
+      %Env{
+        bindings: [
+          {:port, "PORT", default: 4000, map: &String.to_integer/1}
+        ]
+      }
+    ]
+    config = Vapor.load!(providers)
     children = [
-      {Plug.Cowboy, scheme: :http, plug: Router, options: [port: 4000]}
+      {Plug.Cowboy, scheme: :http, plug: Router, options: [port: config.port]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
