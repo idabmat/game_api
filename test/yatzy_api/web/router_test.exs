@@ -13,8 +13,31 @@ defmodule YatzyApi.Web.RouterTest do
 
              assert conn.state == :sent
              assert conn.status == 200
-             assert conn.resp_body == "ok"
+             assert Jason.decode!(conn.resp_body) == %{"response" => "ok"}
+
+             assert Enum.member?(
+                      conn.resp_headers,
+                      {"content-type", "application/json; charset=utf-8"}
+                    )
            end) =~ "GET /"
+  end
+
+  test "posting some JSON" do
+    assert capture_log(fn ->
+             conn =
+               conn(:post, "/", Jason.encode!(%{foo: "bar"}))
+               |> put_req_header("content-type", "application/json")
+               |> Router.call(@opts)
+
+             assert conn.state == :sent
+             assert conn.status == 201
+             assert Jason.decode!(conn.resp_body) == %{"request" => %{"foo" => "bar"}}
+
+             assert Enum.member?(
+                      conn.resp_headers,
+                      {"content-type", "application/json; charset=utf-8"}
+                    )
+           end) =~ "POST /"
   end
 
   test "return 404 elsewhere" do
@@ -23,7 +46,12 @@ defmodule YatzyApi.Web.RouterTest do
 
              assert conn.state == :sent
              assert conn.status == 404
-             assert conn.resp_body == "Not found"
+             assert Jason.decode!(conn.resp_body) == %{"error" => "Not found"}
+
+             assert Enum.member?(
+                      conn.resp_headers,
+                      {"content-type", "application/json; charset=utf-8"}
+                    )
            end) =~ "GET /pokemon"
   end
 end
