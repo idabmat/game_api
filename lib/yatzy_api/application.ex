@@ -4,11 +4,11 @@ defmodule YatzyApi.Application do
   @moduledoc false
 
   use Application
+  alias YatzyApi.Web.Router
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: YatzyApi.Worker.start_link(arg)
-      # {YatzyApi.Worker, arg}
+      {Plug.Cowboy, scheme: :http, plug: Router, options: [port: 4000]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
