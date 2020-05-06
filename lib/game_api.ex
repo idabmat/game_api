@@ -1,6 +1,6 @@
-defmodule YatzyApi do
+defmodule GameApi do
   @moduledoc """
-  Documentation for `YatzyApi`.
+  Documentation for `GameApi`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule YatzyApi do
 
   ## Examples
 
-      iex> YatzyApi.hello()
+      iex> GameApi.hello()
       :world
 
   """
