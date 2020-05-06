@@ -1,9 +1,9 @@
-defmodule YatzyApi.MixProject do
+defmodule GameApi.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :yatzy_api,
+      app: :game_api,
       version: "0.1.0",
       elixir: "~> 1.10",
       build_embedded: Mix.env() == :prod,
@@ -16,7 +16,7 @@ defmodule YatzyApi.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {YatzyApi.Application, []}
+      mod: {GameApi.Application, []}
     ]
   end
 

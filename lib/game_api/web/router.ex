@@ -1,4 +1,4 @@
-defmodule YatzyApi.Web.Router do
+defmodule GameApi.Web.Router do
   use Plug.Router
 
   plug(Plug.Logger)
