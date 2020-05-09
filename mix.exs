@@ -16,7 +16,7 @@ defmodule GameApi.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {GameApi.Application, []}
+      mod: {Web.Application, []}
     ]
   end
 

@@ -1,10 +1,10 @@
-defmodule GameApi.Web.RouterTest do
+defmodule Web.RouterTest do
   use ExUnit.Case, async: true
   use Plug.Test
 
   import ExUnit.CaptureLog
 
-  alias GameApi.Web.Router
+  alias Web.Router
   @opts Router.init([])
 
   test "returns ok on /" do

@@ -1,11 +1,11 @@
-defmodule GameApi.Application do
+defmodule Web.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
 
   use Application
-  alias GameApi.Web.Router
   alias Vapor.Provider.Env
+  alias Web.Router
 
   def start(_type, _args) do
     providers = [
@@ -24,7 +24,7 @@ defmodule GameApi.Application do
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: GameApi.Supervisor]
+    opts = [strategy: :one_for_one, name: Web.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
