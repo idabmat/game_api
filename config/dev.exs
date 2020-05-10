@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :game_api, Web.Endpoint,
   debug_errors: true,
