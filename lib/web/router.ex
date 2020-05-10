@@ -1,32 +1,14 @@
 defmodule Web.Router do
-  use Plug.Router
+  use Web, :router
 
-  plug(Plug.Logger)
-
-  plug(Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
-    pass: ["*/*"],
-    json_decoder: Jason
-  )
-
-  plug(:match)
-  plug(:dispatch)
-
-  get "/" do
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, Jason.encode!(%{response: :ok}))
+  pipeline :api do
+    plug(:accepts, ["json"])
   end
 
-  post "/" do
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(201, Jason.encode!(%{request: conn.params}))
-  end
+  scope "/" do
+    pipe_through(:api)
 
-  match _ do
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(404, Jason.encode!(%{error: "Not found"}))
+    get("/", Web.Controllers.Simple, :show)
+    post("/", Web.Controllers.Simple, :create)
   end
 end

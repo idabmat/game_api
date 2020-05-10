@@ -5,7 +5,6 @@ defmodule Web.Application do
 
   use Application
   alias Vapor.Provider.Env
-  alias Web.Router
 
   def start(_type, _args) do
     providers = [
@@ -19,7 +18,7 @@ defmodule Web.Application do
     config = Vapor.load!(providers)
 
     children = [
-      {Plug.Cowboy, scheme: :http, plug: Router, options: [port: config.port]}
+      {Web.Endpoint, http: [port: config.port]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
