@@ -19,7 +19,7 @@ defmodule Web.Application do
     Supervisor.start_link(children, opts)
   end
 
-  defp setup_vapor() do
+  defp setup_vapor do
     providers = [
       %Env{
         bindings: [
