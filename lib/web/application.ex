@@ -10,7 +10,7 @@ defmodule Web.Application do
     config = setup_vapor()
 
     children = [
-      {Web.Endpoint, url: [host: config.host, port: config.port]}
+      {Web.Endpoint, url: [host: config.host]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -23,11 +23,7 @@ defmodule Web.Application do
     providers = [
       %Env{
         bindings: [
-          {:port, "PORT", default: 4000, map: &String.to_integer/1},
-          {:host, "APP_NAME", required: false,  map: fn
-            nil -> "localhost"
-            app_name -> app_name <> ".gigalixirapp.com"
-          end},
+          {:host, "APP_NAME", default: "localhost", map: &(&1 <> ".gigalixirapp.com")}
         ]
       }
     ]
