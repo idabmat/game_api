@@ -7,23 +7,27 @@ defmodule Web.Application do
   alias Vapor.Provider.Env
 
   def start(_type, _args) do
-    providers = [
-      %Env{
-        bindings: [
-          {:port, "PORT", default: 4000, map: &String.to_integer/1}
-        ]
-      }
-    ]
-
-    config = Vapor.load!(providers)
+    config = setup_vapor()
 
     children = [
-      {Web.Endpoint, http: [port: config.port]}
+      {Web.Endpoint, url: [host: config.host]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Web.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp setup_vapor do
+    providers = [
+      %Env{
+        bindings: [
+          {:host, "APP_NAME", default: "localhost", map: &(&1 <> ".gigalixirapp.com")}
+        ]
+      }
+    ]
+
+    Vapor.load!(providers)
   end
 end
