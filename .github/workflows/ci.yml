@@ -192,12 +192,13 @@ jobs:
           sudo pip install gigalixir --ignore-installed six
           echo 'export PATH=~/.local/bin:$PATH' >> ~/.bash_profile
           source ~/.bash_profile
-          git remote add gigalixir https://git.gigalixir.com/monumental-busy-volvox.git
       - name: Setup Gigalixir
         env:
           GIGALIXIR_USER: ${{ secrets.GIGALIXIR_USER }}
           GIGALIXIR_TOKEN: ${{ secrets.GIGALIXIR_TOKEN }}
+          GIGALIXIR_APP: ${{ secrets.GIGALIXIR_APP }}
         run: |
+          git remote add gigalixir https://git.gigalixir.com/$GIGALIXIR_APP.git
           cat >> ~/.netrc <<EOF
           machine api.gigalixir.com
             login $GIGALIXIR_USER
