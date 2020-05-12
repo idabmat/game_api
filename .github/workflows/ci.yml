@@ -182,7 +182,7 @@ jobs:
   #     - name: Check Types
   #       run: mix dialyzer --halt-exit-status
   deploy:
-    needs: type_check
+    # needs: type_check
     # if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     steps:
