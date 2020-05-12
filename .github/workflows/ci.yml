@@ -186,7 +186,8 @@ jobs:
     # if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Intall Gigalixir CLI
+      - uses: actions/checkout@v2
+      - name: Install Gigalixir CLI
         run: |
           sudo pip install gigalixir --ignore-installed six
           echo 'export PATH=~/.local/bin:$PATH' >> ~/.bash_profile
