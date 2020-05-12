@@ -1,7 +1,6 @@
 import Config
 
 config :game_api, Web.Endpoint,
-  url: [host: "localhost"],
   render_errors: [view: Web.Views.Error, accepts: ~w(json), layout: false],
   server: true
 
