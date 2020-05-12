@@ -198,15 +198,15 @@ jobs:
           GIGALIXIR_USER: ${{ secrets.GIGALIXIR_USER }}
           GIGALIXIR_TOKEN: ${{ secrets.GIGALIXIR_TOKEN }}
         run: |
-          echo <<EOF
+          cat >> ~/.netrc <<EOF
           machine api.gigalixir.com
             login $GIGALIXIR_USER
             password $GIGALIXIR_TOKEN
           machine git.gigalixir.com
             login $GIGALIXIR_USER
             password $GIGALIXIR_TOKEN
-          EOF >> ~/.netrc
+          EOF
       - name: Deploy
         run: |
-          ls -al ~/.netrc
+          cat ~/.netrc
           git push -f gigalixir HEAD:refs/heads/master
