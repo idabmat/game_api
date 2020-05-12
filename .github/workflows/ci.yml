@@ -181,28 +181,30 @@ jobs:
   #           ${{ runner.os }}-dialyzer-
   #     - name: Check Types
   #       run: mix dialyzer --halt-exit-status
-  build:
+  deploy:
+    # needs: type_check
+    # if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Intall Gigalixir CLI
-      run: |
-        pip3 install gigalixir --ignore-installed six
-        echo 'export PATH=~/.local/bin:$PATH' >> ~/.bash_profile
-        source ~/.bash_profile
-        git remote add gigalixir https://git.gigalixir.com/monumental-busy-volvox.git
-    - name: Setup Gigalixir
-      env:
-        GIGALIXIR_USER: ${{ secrets.GIGALIXIR_USER }}
-        GIGALIXIR_TOKEN: ${{ secrets.GIGALIXIR_TOKEN }}
-      run: |
-        echo <<EOF
-        machine api.gigalixir.com
-          login $GIGALIXIR_USER
-          password $GIGALIXIR_TOKEN
-        machine git.gigalixir.com
-          login $GIGALIXIR_USER
-          password $GIGALIXIR_TOKEN
-        EOF >> ~/.netrc
-    - name: Deploy
-      run: git push gigalixir release:master
+      - uses: actions/checkout@v2
+      - name: Intall Gigalixir CLI
+        run: |
+          pip3 install gigalixir --ignore-installed six
+          echo 'export PATH=~/.local/bin:$PATH' >> ~/.bash_profile
+          source ~/.bash_profile
+          git remote add gigalixir https://git.gigalixir.com/monumental-busy-volvox.git
+      - name: Setup Gigalixir
+        env:
+          GIGALIXIR_USER: ${{ secrets.GIGALIXIR_USER }}
+          GIGALIXIR_TOKEN: ${{ secrets.GIGALIXIR_TOKEN }}
+        run: |
+          echo <<EOF
+          machine api.gigalixir.com
+            login $GIGALIXIR_USER
+            password $GIGALIXIR_TOKEN
+          machine git.gigalixir.com
+            login $GIGALIXIR_USER
+            password $GIGALIXIR_TOKEN
+          EOF >> ~/.netrc
+      - name: Deploy
+        run: git push gigalixir release:master
