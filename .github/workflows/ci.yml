@@ -207,4 +207,6 @@ jobs:
             password $GIGALIXIR_TOKEN
           EOF >> ~/.netrc
       - name: Deploy
-        run: git push -f gigalixir HEAD:refs/heads/master
+        run: |
+          ls -al ~/.netrc
+          git push -f gigalixir HEAD:refs/heads/master
