@@ -186,10 +186,9 @@ jobs:
     # if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Intall Gigalixir CLI
         run: |
-          pip3 install gigalixir --ignore-installed six
+          sudo pip install gigalixir --ignore-installed six
           echo 'export PATH=~/.local/bin:$PATH' >> ~/.bash_profile
           source ~/.bash_profile
           git remote add gigalixir https://git.gigalixir.com/monumental-busy-volvox.git
