@@ -10,7 +10,7 @@ defmodule Web.Application do
     config = setup_vapor()
 
     children = [
-      {Web.Endpoint, http: [port: config.port], url: [host: config.host]}
+      {Web.Endpoint, url: [host: config.host, port: config.port]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
