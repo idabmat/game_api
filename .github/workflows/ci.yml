@@ -209,4 +209,5 @@ jobs:
           EOF
       - name: Deploy
         run: |
-          git push -f gigalixir master
+          git fetch --unshallow origin
+          git push gigalixir master
