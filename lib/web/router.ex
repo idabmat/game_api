@@ -8,7 +8,6 @@ defmodule Web.Router do
   scope "/" do
     pipe_through(:api)
 
-    get("/", Web.Controllers.Simple, :show)
-    post("/", Web.Controllers.Simple, :create)
+    get("/health", Web.Controllers.HealthCheck, :show)
   end
 end
