@@ -17,7 +17,7 @@ defmodule GameApi.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :ueberauth],
       mod: {GameApi, []}
     ]
   end
@@ -33,6 +33,8 @@ defmodule GameApi.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.0"},
       {:phoenix, "~> 1.5.1"},
+      {:ueberauth, "~> 0.6"},
+      {:ueberauth_google, "~> 0.9"},
       {:vapor, "~> 0.8"}
     ]
   end
