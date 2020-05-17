@@ -12,7 +12,7 @@ config :phoenix, :json_library, Jason
 
 config :ueberauth, Ueberauth,
   providers: [
-    google: {Ueberauth.Strategy.Google, []},
+    google: {Ueberauth.Strategy.Google, []}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,

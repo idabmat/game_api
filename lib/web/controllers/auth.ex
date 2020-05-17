@@ -5,21 +5,27 @@ defmodule Web.Controllers.Auth do
   use Web, :controller
   plug(Ueberauth)
 
+  @spec request(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def request(conn, _params) do
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(200, Jason.encode!(%{}))
   end
 
-  def callback(%{assigns: %{ueberauth_auth: _auth}} = conn, _params) do
+  @spec callback(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def callback(%{assigns: %{ueberauth_failure: failure}} = conn, _params) do
+    {:error, errors} = Auth.create_session(failure)
+
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(200, Jason.encode!(%{status: "Signed in"}))
+    |> send_resp(400, Jason.encode!(%{errors: errors}))
   end
 
-  def callback(conn, _params) do
+  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
+    {:ok, profile} = Auth.create_session(auth)
+
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(400, Jason.encode!(%{status: "Failed to authenticate"}))
+    |> send_resp(200, Jason.encode!(profile))
   end
 end
