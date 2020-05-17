@@ -9,10 +9,10 @@ defmodule GameApi do
   def start(_type, _args) do
     config = setup_vapor()
 
-    Application.put_env(:ueberauth, Ueberauth.Strategy.Google.OAuth, [
+    Application.put_env(:ueberauth, Ueberauth.Strategy.Google.OAuth,
       client_id: config.google_client_id,
       client_secret: config.google_client_secret
-    ])
+    )
 
     children = [
       {Web.Endpoint, url: [host: config.host]}
