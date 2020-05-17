@@ -9,6 +9,11 @@ defmodule GameApi do
   def start(_type, _args) do
     config = setup_vapor()
 
+    Application.put_env(:ueberauth, Ueberauth.Strategy.Google.OAuth, [
+      client_id: config.google_client_id,
+      client_secret: config.google_client_secret
+    ])
+
     children = [
       {Web.Endpoint, url: [host: config.host]}
     ]
@@ -24,7 +29,9 @@ defmodule GameApi do
       %Dotenv{},
       %Env{
         bindings: [
-          {:host, "APP_NAME", default: "localhost", map: &(&1 <> ".gigalixirapp.com")}
+          {:host, "HOST", default: "localhost"},
+          {:google_client_id, "GOOGLE_CLIENT_ID"},
+          {:google_client_secret, "GOOGLE_CLIENT_SECRET"}
         ]
       }
     ]
