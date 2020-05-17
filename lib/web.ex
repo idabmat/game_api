@@ -1,5 +1,7 @@
 defmodule Web do
-  @moduledoc false
+  @moduledoc """
+  Phoenix macro definitions
+  """
 
   def controller do
     quote do

@@ -1,5 +1,7 @@
 defmodule Auth do
-  @moduledoc false
+  @moduledoc """
+  Top-level module for managing player accounts
+  """
 
   alias Auth.UseCase.CreateSession
 

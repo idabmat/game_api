@@ -1,5 +1,8 @@
 defmodule Web.Controllers.HealthCheck do
-  @moduledoc false
+  @moduledoc """
+  Controller to handle health checks
+  """
+
   use Web, :controller
 
   def show(conn, _params) do

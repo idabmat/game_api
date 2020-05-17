@@ -1,7 +1,7 @@
 defmodule GameApi do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
+  @moduledoc """
+  Main application module
+  """
 
   use Application
   alias Vapor.Provider.Env
