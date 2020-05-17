@@ -1,5 +1,7 @@
 defmodule Web.Views.Error do
-  @moduledoc false
+  @moduledoc """
+  Module for dealing with errors responses
+  """
 
   use Web, :view
 
