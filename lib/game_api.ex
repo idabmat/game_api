@@ -4,7 +4,7 @@ defmodule GameApi do
   """
 
   use Application
-  alias Vapor.Provider.Env
+  alias Vapor.Provider.{Dotenv, Env}
 
   def start(_type, _args) do
     config = setup_vapor()
@@ -21,6 +21,7 @@ defmodule GameApi do
 
   defp setup_vapor do
     providers = [
+      %Dotenv{},
       %Env{
         bindings: [
           {:host, "APP_NAME", default: "localhost", map: &(&1 <> ".gigalixirapp.com")}
