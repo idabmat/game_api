@@ -114,6 +114,9 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_CLIENT_ID: 123
+      GOOGLE_CLIENT_SECRET: 456
     steps:
       - uses: actions/checkout@v2
       - name: Setup elixir
