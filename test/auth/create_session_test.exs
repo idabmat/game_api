@@ -1,7 +1,8 @@
 defmodule Auth.CreateSessionTest do
   use ExUnit.Case, async: true
 
-  alias Auth.Account.InMemory, as: Account
+  alias Auth.Account
+  alias Auth.Account.InMemory
   alias Auth.CreateSession
 
   defp invalid_google_auth do
@@ -45,13 +46,13 @@ defmodule Auth.CreateSessionTest do
   end
 
   setup do
-    start_supervised!(Account)
+    start_supervised!(InMemory)
     :ok
   end
 
   describe "without data" do
     setup do
-      result = CreateSession.execute(%{}, account_gateway: Account)
+      result = CreateSession.execute(%{}, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -60,14 +61,14 @@ defmodule Auth.CreateSessionTest do
     end
 
     test "does not create an account" do
-      assert Account.size() == 0
+      assert InMemory.size() == 0
     end
   end
 
   describe "with a invalid google auth" do
     setup do
       auth_data = invalid_google_auth()
-      result = CreateSession.execute(auth_data, account_gateway: Account)
+      result = CreateSession.execute(auth_data, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -76,14 +77,14 @@ defmodule Auth.CreateSessionTest do
     end
 
     test "does not create an account" do
-      assert Account.size() == 0
+      assert InMemory.size() == 0
     end
   end
 
   describe "with a valid google auth and no previous account" do
     setup do
       auth_data = valid_google_auth()
-      result = CreateSession.execute(auth_data, account_gateway: Account)
+      result = CreateSession.execute(auth_data, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -96,14 +97,38 @@ defmodule Auth.CreateSessionTest do
 
     test "creates an account", %{result: result} do
       assert {:ok, profile} = result
-      assert Account.get({:google, "123"}) == profile
+      assert InMemory.get({:google, "123"}) == profile
+      assert InMemory.size() == 1
+    end
+  end
+
+  describe "with a valid google auth and a previous account" do
+    setup do
+      previous_account = %Account{provider: :google, uid: "123", email: "old@email.com"}
+      InMemory.set(previous_account)
+      auth_data = valid_google_auth()
+      result = CreateSession.execute(auth_data, account_gateway: InMemory)
+      {:ok, %{result: result}}
+    end
+
+    test "returns the updated profile", %{result: result} do
+      assert {:ok, profile} = result
+      assert profile.email == "me@acme.com"
+      assert profile.image == "https://lh6.googleusercontent.com/photo.jpg"
+      assert profile.uid == "123"
+    end
+
+    test "updates the existing account", %{result: result} do
+      assert {:ok, profile} = result
+      assert InMemory.get({:google, "123"}) == profile
+      assert InMemory.size() == 1
     end
   end
 
   describe "with an invalid and unknown provider" do
     setup do
       auth_data = invalid_unknown_auth()
-      result = CreateSession.execute(auth_data, account_gateway: Account)
+      result = CreateSession.execute(auth_data, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -112,14 +137,14 @@ defmodule Auth.CreateSessionTest do
     end
 
     test "does not create an account" do
-      assert Account.size() == 0
+      assert InMemory.size() == 0
     end
   end
 
   describe "with an valid but unknown provider" do
     setup do
       auth_data = valid_unknown_auth()
-      result = CreateSession.execute(auth_data, account_data: Account)
+      result = CreateSession.execute(auth_data, account_data: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -128,7 +153,7 @@ defmodule Auth.CreateSessionTest do
     end
 
     test "does not create an account" do
-      assert Account.size() == 0
+      assert InMemory.size() == 0
     end
   end
 end
