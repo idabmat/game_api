@@ -6,6 +6,7 @@ defmodule Auth.Account do
 
   use TypedStruct
 
+  @derive {Jason.Encoder, only: [:uid, :email, :image]}
   typedstruct do
     field(:provider, atom(), enforce: true)
     field(:uid, String.t(), enforce: true)

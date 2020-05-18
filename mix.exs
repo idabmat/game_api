@@ -10,7 +10,8 @@ defmodule GameApi.MixProject do
       compilers: [:phoenix] ++ Mix.compilers(),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -37,6 +38,12 @@ defmodule GameApi.MixProject do
       {:ueberauth, "~> 0.6"},
       {:ueberauth_google, "~> 0.9"},
       {:vapor, "~> 0.8"}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "test --no-start"
     ]
   end
 end
