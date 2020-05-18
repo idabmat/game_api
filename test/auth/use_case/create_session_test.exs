@@ -1,10 +1,10 @@
 defmodule Auth.UseCase.CreateSessionTest do
   use ExUnit.Case, async: true
 
-  alias Auth.UseCase.CreateSession
   alias Auth.Account.InMemory, as: Account
+  alias Auth.UseCase.CreateSession
 
-  defp invalid_google_auth() do
+  defp invalid_google_auth do
     %Ueberauth.Failure{
       errors: [%Ueberauth.Failure.Error{message: "No code received", message_key: "missing_code"}],
       provider: :google,
@@ -12,7 +12,7 @@ defmodule Auth.UseCase.CreateSessionTest do
     }
   end
 
-  defp valid_google_auth() do
+  defp valid_google_auth do
     %Ueberauth.Auth{
       credentials: %Ueberauth.Auth.Credentials{},
       extra: %Ueberauth.Auth.Extra{},
@@ -26,14 +26,14 @@ defmodule Auth.UseCase.CreateSessionTest do
     }
   end
 
-  defp invalid_unknown_auth() do
+  defp invalid_unknown_auth do
     %Ueberauth.Failure{
       errors: [%Ueberauth.Failure.Error{message: "No code received", message_key: "missing_code"}],
       provider: :foobar
     }
   end
 
-  defp valid_unknown_auth() do
+  defp valid_unknown_auth do
     %Ueberauth.Auth{
       info: %Ueberauth.Auth.Info{
         email: "me@acme.com",

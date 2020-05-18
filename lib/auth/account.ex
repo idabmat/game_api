@@ -7,9 +7,9 @@ defmodule Auth.Account do
   use TypedStruct
 
   typedstruct do
-    field :provider, atom(), enforce: true
-    field :uid, String.t(), enforce: true
-    field :email, String.t()
-    field :image, String.t()
+    field(:provider, atom(), enforce: true)
+    field(:uid, String.t(), enforce: true)
+    field(:email, String.t())
+    field(:image, String.t())
   end
 end

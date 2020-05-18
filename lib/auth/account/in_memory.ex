@@ -10,7 +10,7 @@ defmodule Auth.Account.InMemory do
     Agent.start_link(fn -> %{} end, name: __MODULE__)
   end
 
-  def size() do
+  def size do
     Agent.get(__MODULE__, &map_size/1)
   end
 

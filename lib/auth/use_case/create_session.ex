@@ -1,6 +1,6 @@
 defprotocol Auth.UseCase.CreateSession do
   @fallback_to_any true
-  @spec execute(map(), [account_gateway: module()]) :: {:ok, map()} | {:error, [String.t()]}
+  @spec execute(map(), account_gateway: module()) :: {:ok, map()} | {:error, [String.t()]}
   def execute(auth_data, options \\ [])
 end
 
