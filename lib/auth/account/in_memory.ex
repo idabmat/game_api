@@ -1,5 +1,7 @@
 defmodule Auth.Account.InMemory do
-  @moduledoc false
+  @moduledoc """
+  Implementation of an in memory gateway for accounts.
+  """
 
   alias Auth.Account
   use Agent
