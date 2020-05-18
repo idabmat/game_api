@@ -5,7 +5,7 @@ defmodule Auth do
 
   alias Auth.Account
   alias Auth.Account.InMemory
-  alias Auth.UseCase.CreateSession
+  alias Auth.CreateSession
 
   @spec create_session(map()) :: {:ok, Account.t()} | {:error, [String.t()]}
   def create_session(data), do: CreateSession.execute(data, account_gateway: InMemory)

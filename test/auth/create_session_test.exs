@@ -1,8 +1,8 @@
-defmodule Auth.UseCase.CreateSessionTest do
+defmodule Auth.CreateSessionTest do
   use ExUnit.Case, async: true
 
   alias Auth.Account.InMemory, as: Account
-  alias Auth.UseCase.CreateSession
+  alias Auth.CreateSession
 
   defp invalid_google_auth do
     %Ueberauth.Failure{
