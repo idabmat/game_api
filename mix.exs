@@ -33,6 +33,7 @@ defmodule GameApi.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.0"},
       {:phoenix, "~> 1.5.1"},
+      {:typed_struct, "~> 0.1.4"},
       {:ueberauth, "~> 0.6"},
       {:ueberauth_google, "~> 0.9"},
       {:vapor, "~> 0.8"}
