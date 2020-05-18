@@ -17,8 +17,10 @@ defimpl Auth.UseCase.CreateSession, for: Ueberauth.Failure do
 end
 
 defimpl Auth.UseCase.CreateSession, for: Ueberauth.Auth do
+  alias Auth.Account
+
   def execute(%{info: info, provider: :google, uid: uid}, account_gateway: account_gateway) do
-    profile = %{email: info.email, image: info.image, uid: uid, provider: :google}
+    profile = %Account{email: info.email, image: info.image, uid: uid, provider: :google}
     account_gateway.set(profile)
     {:ok, profile}
   end

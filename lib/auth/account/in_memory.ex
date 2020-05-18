@@ -21,9 +21,9 @@ defmodule Auth.Account.InMemory do
   end
 
   @impl Account
-  def set(%{provider: provider, uid: uid} = profile) do
+  def set(%Account{provider: provider, uid: uid} = account) do
     key = compute_key(provider, uid)
-    Agent.update(__MODULE__, &Map.put(&1, key, profile))
+    Agent.update(__MODULE__, &Map.put(&1, key, account))
   end
 
   defp compute_key(provider, uid) do
