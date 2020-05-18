@@ -15,7 +15,8 @@ defmodule GameApi do
     )
 
     children = [
-      {Web.Endpoint, url: [host: config.host]}
+      {Web.Endpoint, url: [host: config.host]},
+      Auth.Account.InMemory
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

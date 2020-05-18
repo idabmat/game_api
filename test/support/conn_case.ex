@@ -32,6 +32,7 @@ defmodule Web.ConnCase do
   end
 
   setup _tags do
+    start_supervised!(Web.Endpoint)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end
