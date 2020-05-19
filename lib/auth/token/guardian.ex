@@ -1,5 +1,7 @@
 defmodule Auth.Token.Guardian do
-  @moduledoc false
+  @moduledoc """
+  Implementation of the Auth.Token behaviour based on the Guardian library.
+  """
 
   use Guardian, otp_app: :game_api
 

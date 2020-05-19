@@ -1,5 +1,10 @@
 defmodule Auth.Token.Constant do
-  @moduledoc false
+  @moduledoc """
+  Implementation of the Auth.Token behaviour based on an Agent.
+
+  This implementation uses a constant string as the token. The constant should
+  be provided when initializing the Agent.
+  """
 
   alias Auth.Account
   alias Auth.Token

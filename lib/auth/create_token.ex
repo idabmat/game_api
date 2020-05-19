@@ -1,5 +1,7 @@
 defmodule Auth.CreateToken do
-  @moduledoc false
+  @moduledoc """
+  Use case that generates a token for a given account.
+  """
 
   alias Auth.Account
 

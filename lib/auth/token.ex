@@ -1,5 +1,9 @@
 defmodule Auth.Token do
-  @moduledoc false
+  @moduledoc """
+  Behaviour module to define:
+  - how to convert a resource to a token
+  - how to get a resource from a token
+  """
 
   alias Auth.Account
 
