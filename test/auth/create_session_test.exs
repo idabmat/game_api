@@ -98,7 +98,7 @@ defmodule Auth.CreateSessionTest do
 
     test "creates an account", %{result: result} do
       assert {:ok, profile} = result
-      assert InMemory.get({:google, "123"}) == profile
+      assert InMemory.get(Account.key(profile)) == profile
       assert InMemory.size() == 1
     end
   end
@@ -121,7 +121,7 @@ defmodule Auth.CreateSessionTest do
 
     test "updates the existing account", %{result: result} do
       assert {:ok, profile} = result
-      assert InMemory.get({:google, "123"}) == profile
+      assert InMemory.get(Account.key(profile)) == profile
       assert InMemory.size() == 1
     end
   end
