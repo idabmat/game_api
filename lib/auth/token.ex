@@ -3,5 +3,5 @@ defmodule Auth.Token do
 
   alias Auth.Account
 
-  @callback set(Account.t()) :: String.t()
+  @callback set(Account.t()) :: {:ok, String.t()} | {:error, atom()}
 end
