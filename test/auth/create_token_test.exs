@@ -12,7 +12,7 @@ defmodule Auth.CreateTokenTest do
   end
 
   test "without an account" do
-    assert {:error, :account_not_found} == execute(nil, token_gateway: Constant)
+    assert {:error, ["Account not found"]} == execute(nil, token_gateway: Constant)
   end
 
   test "with an account" do

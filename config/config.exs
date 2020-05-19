@@ -15,7 +15,6 @@ config :ueberauth, Ueberauth,
     google: {Ueberauth.Strategy.Google, []}
   ]
 
-config :game_api, Auth.Token.Guardian,
-  issuer: "game_api"
+config :game_api, Auth.Token.Guardian, issuer: "game_api"
 
 import_config "#{Mix.env()}.exs"

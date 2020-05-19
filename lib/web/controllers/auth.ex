@@ -28,10 +28,10 @@ defmodule Web.Controllers.Auth do
       |> put_resp_content_type("application/json")
       |> send_resp(200, Jason.encode!(%{token: token}))
     else
-      {:error, reason} ->
+      {:error, errors} ->
         conn
         |> put_resp_content_type("application/json")
-        |> send_resp(400, Jason.encode!(%{errors: reason}))
+        |> send_resp(400, Jason.encode!(%{errors: errors}))
     end
   end
 end
