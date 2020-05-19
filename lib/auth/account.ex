@@ -17,4 +17,9 @@ defmodule Auth.Account do
 
   @callback get({atom(), String.t()}) :: t() | nil
   @callback set(t()) :: :ok
+
+  @spec key(t()) :: String.t()
+  def key(account) do
+    Atom.to_string(account.provider) <> ":#{account.uid}"
+  end
 end
