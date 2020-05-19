@@ -23,12 +23,8 @@ defmodule Auth.Token.Guardian do
 
   @impl Guardian
   def resource_from_claims(claims) do
-    {provider, uid} =
-      claims["sub"]
-      |> String.split(":")
-      |> Enum.into({})
-
-    Account.InMemory.get({provider, uid})
+    sub = claims["sub"]
+    Account.InMemory.get(sub)
   end
 
   defp setup_vapor do
