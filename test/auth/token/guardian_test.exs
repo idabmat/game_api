@@ -8,8 +8,4 @@ defmodule Auth.Token.GuardianTest do
     account = %Account{provider: :foobar, uid: "123"}
     assert is_binary(Guardian.set(account))
   end
-
-  test "generating a token without an account" do
-    assert {:error, :account_not_found} == Guardian.set(nil)
-  end
 end

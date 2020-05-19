@@ -15,9 +15,7 @@ defmodule Auth.Token.Constant do
   def set(%Account{} = account) do
     Agent.get_and_update(__MODULE__, fn state ->
       constant = Map.keys(state) |> List.first()
-      {{:ok, constant}, Map.put(state, constant, account)}
+      {constant, Map.put(state, constant, account)}
     end)
   end
-
-  def set(_), do: {:error, :account_not_found}
 end

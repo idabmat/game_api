@@ -10,13 +10,11 @@ defmodule Auth.Token.Guardian do
   @behaviour Token
 
   @impl Token
-  def set(account) do
+  def set(%Account{} = account) do
     config = setup_vapor()
 
-    case encode_and_sign(account, %{}, secret: config.guardian_secret_key) do
-      {:ok, token, _claims} -> token
-      {:error, reason} -> {:error, reason}
-    end
+    {:ok, token, _claims} = encode_and_sign(account, %{}, secret: config.guardian_secret_key)
+    token
   end
 
   @impl Guardian
