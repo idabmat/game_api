@@ -17,18 +17,13 @@ defmodule Auth.Account.InMemory do
   end
 
   @impl Account
-  def get({provider, uid}) do
-    key = compute_key(provider, uid)
-    Agent.get(__MODULE__, &Map.get(&1, key, nil))
+  def get(account_key) do
+    Agent.get(__MODULE__, &Map.get(&1, account_key, nil))
   end
 
   @impl Account
-  def set(%Account{provider: provider, uid: uid} = account) do
-    key = compute_key(provider, uid)
+  def set(%Account{} = account) do
+    key = Account.key(account)
     Agent.update(__MODULE__, &Map.put(&1, key, account))
-  end
-
-  defp compute_key(provider, uid) do
-    Atom.to_string(provider) <> ":#{uid}"
   end
 end
