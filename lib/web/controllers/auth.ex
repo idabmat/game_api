@@ -22,10 +22,16 @@ defmodule Web.Controllers.Auth do
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    {:ok, profile} = Auth.create_session(auth)
-
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, Jason.encode!(profile))
+    with {:ok, account} <- Auth.create_session(auth),
+         {:ok, token} <- Auth.create_token(account) do
+      conn
+      |> put_resp_content_type("application/json")
+      |> send_resp(200, Jason.encode!(%{token: token}))
+    else
+      {:error, reason} ->
+        conn
+        |> put_resp_content_type("application/json")
+        |> send_resp(400, Jason.encode!(%{errors: reason}))
+    end
   end
 end
