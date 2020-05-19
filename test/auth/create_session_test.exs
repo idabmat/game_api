@@ -3,7 +3,8 @@ defmodule Auth.CreateSessionTest do
 
   alias Auth.Account
   alias Auth.Account.InMemory
-  alias Auth.CreateSession
+
+  import Auth.CreateSession, only: [execute: 2]
 
   defp invalid_google_auth do
     %Ueberauth.Failure{
@@ -52,7 +53,7 @@ defmodule Auth.CreateSessionTest do
 
   describe "without data" do
     setup do
-      result = CreateSession.execute(%{}, account_gateway: InMemory)
+      result = execute(%{}, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -68,7 +69,7 @@ defmodule Auth.CreateSessionTest do
   describe "with a invalid google auth" do
     setup do
       auth_data = invalid_google_auth()
-      result = CreateSession.execute(auth_data, account_gateway: InMemory)
+      result = execute(auth_data, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -84,7 +85,7 @@ defmodule Auth.CreateSessionTest do
   describe "with a valid google auth and no previous account" do
     setup do
       auth_data = valid_google_auth()
-      result = CreateSession.execute(auth_data, account_gateway: InMemory)
+      result = execute(auth_data, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -107,7 +108,7 @@ defmodule Auth.CreateSessionTest do
       previous_account = %Account{provider: :google, uid: "123", email: "old@email.com"}
       InMemory.set(previous_account)
       auth_data = valid_google_auth()
-      result = CreateSession.execute(auth_data, account_gateway: InMemory)
+      result = execute(auth_data, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -128,7 +129,7 @@ defmodule Auth.CreateSessionTest do
   describe "with an invalid and unknown provider" do
     setup do
       auth_data = invalid_unknown_auth()
-      result = CreateSession.execute(auth_data, account_gateway: InMemory)
+      result = execute(auth_data, account_gateway: InMemory)
       {:ok, %{result: result}}
     end
 
@@ -144,7 +145,7 @@ defmodule Auth.CreateSessionTest do
   describe "with an valid but unknown provider" do
     setup do
       auth_data = valid_unknown_auth()
-      result = CreateSession.execute(auth_data, account_data: InMemory)
+      result = execute(auth_data, account_data: InMemory)
       {:ok, %{result: result}}
     end
 
