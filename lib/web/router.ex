@@ -5,6 +5,10 @@ defmodule Web.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :api_auth do
+    plug(Web.Auth.Pipeline)
+  end
+
   scope "/auth" do
     pipe_through(:api)
 
@@ -16,5 +20,11 @@ defmodule Web.Router do
     pipe_through(:api)
 
     get("/health", Web.Controllers.HealthCheck, :show)
+  end
+
+  scope "/" do
+    pipe_through([:api, :api_auth])
+
+    get("/sekret", Web.Controllers.Secret, :show)
   end
 end
