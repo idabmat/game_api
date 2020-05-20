@@ -23,6 +23,7 @@ defmodule Web.RouterTest do
   test "return protected endpoint with credentials", %{conn: conn} do
     account = %Auth.Account{provider: :foo, uid: "123"}
     {:ok, token} = Auth.create_token(account)
+
     conn =
       conn
       |> put_req_header("authorization", "Bearer #{token}")
