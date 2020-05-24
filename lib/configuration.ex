@@ -4,8 +4,6 @@ defmodule Configuration do
   into application environment for compatibility with some library
   """
 
-  defstruct [:name]
-
   alias Vapor.Provider.{Dotenv, Env, Group}
 
   @doc """
