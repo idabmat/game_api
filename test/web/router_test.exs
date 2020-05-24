@@ -1,5 +1,5 @@
 defmodule Web.RouterTest do
-  use Web.ConnCase
+  use Web.ConnCase, async: false
 
   setup context do
     if context[:with_config] do
