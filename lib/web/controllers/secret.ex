@@ -1,5 +1,8 @@
 defmodule Web.Controllers.Secret do
-  @moduledoc false
+  @moduledoc """
+  Bogus controller to test authentication.
+  """
+
   use Web, :controller
 
   def show(conn, _params) do

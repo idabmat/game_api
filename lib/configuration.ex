@@ -1,16 +1,25 @@
 defmodule Configuration do
-  @moduledoc false
+  @moduledoc """
+  Generate a Map with all configuration information and inject configuration
+  into application environment for compatibility with some library
+  """
 
   defstruct [:name]
 
   alias Vapor.Provider.{Dotenv, Env, Group}
 
+  @doc """
+  Loads and injects the configuration.
+  """
   def load! do
     config = Vapor.load!(providers())
     inject_config(config)
     config
   end
 
+  @doc """
+  Remove injected configuration from application environment.
+  """
   def unload do
     Application.delete_env(:ueberauth, Ueberauth.Strategy.Google.OAuth)
     Application.delete_env(:game_api, Auth.Token.Guardian)
@@ -42,10 +51,6 @@ defmodule Configuration do
       %Group{
         name: :guardian,
         providers: guardian_config()
-      },
-      %Group{
-        name: :gateways,
-        providers: gateways_config()
       }
     ]
   end
@@ -79,21 +84,5 @@ defmodule Configuration do
         ]
       }
     ]
-  end
-
-  defp gateways_config do
-    [
-      %Env{
-        bindings: [
-          {:token, "AUTH_TOKEN_GATEWAY", default: Auth.Token.Guardian, map: &string_to_module/1},
-          {:account, "AUTH_ACCOUNT_GATEWAY",
-           default: Auth.Account.InMemory, map: &string_to_module/1}
-        ]
-      }
-    ]
-  end
-
-  defp string_to_module(string) do
-    String.to_existing_atom("Elixir.#{string}")
   end
 end

@@ -1,5 +1,7 @@
 defmodule Web.Auth.ErrorHandler do
-  @moduledoc false
+  @moduledoc """
+  Error response format for requests with failed authentication.
+  """
 
   import Plug.Conn
 

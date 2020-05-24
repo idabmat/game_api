@@ -1,5 +1,7 @@
 defmodule Web.Auth.Pipeline do
-  @moduledoc false
+  @moduledoc """
+  Guardian Plug to authenticate requests.
+  """
 
   use Guardian.Plug.Pipeline,
     otp_app: :game_api,
