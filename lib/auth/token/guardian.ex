@@ -7,15 +7,12 @@ defmodule Auth.Token.Guardian do
 
   alias Auth.Account
   alias Auth.Token
-  alias Vapor.Provider.{Dotenv, Env}
 
   @behaviour Token
 
   @impl Token
   def set(%Account{} = account) do
-    config = setup_vapor()
-
-    {:ok, token, _claims} = encode_and_sign(account, %{}, secret: config.guardian_secret_key)
+    {:ok, token, _claims} = encode_and_sign(account, %{})
     token
   end
 
@@ -26,19 +23,8 @@ defmodule Auth.Token.Guardian do
   @impl Guardian
   def resource_from_claims(claims) do
     sub = claims["sub"]
-    Account.InMemory.get(sub)
-  end
-
-  defp setup_vapor do
-    providers = [
-      %Dotenv{},
-      %Env{
-        bindings: [
-          {:guardian_secret_key, "GUARDIAN_SECRET_KEY"}
-        ]
-      }
-    ]
-
-    Vapor.load!(providers)
+    dependencies = Application.get_env(:game_api, Auth)
+    account_gateway = dependencies.auth[:account_gateway]
+    account_gateway.get(sub)
   end
 end
