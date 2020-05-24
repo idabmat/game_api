@@ -44,7 +44,8 @@ defmodule GameApi.MixProject do
 
   defp aliases do
     [
-      test: "test --no-start"
+      test: "test --no-start",
+      check: ["format --check-formatted", "credo --strict", "dialyzer"]
     ]
   end
 end
