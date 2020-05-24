@@ -4,7 +4,12 @@ defmodule Web.RouterTest do
   setup context do
     if context[:with_config] do
       Configuration.load!()
-      on_exit(fn -> Configuration.unload() end)
+      Dependencies.load!()
+
+      on_exit(fn ->
+        Configuration.unload()
+        Dependencies.unload()
+      end)
     end
 
     :ok

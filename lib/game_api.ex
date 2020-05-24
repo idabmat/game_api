@@ -7,10 +7,11 @@ defmodule GameApi do
 
   def start(_type, _args) do
     config = Configuration.load!()
+    dependencies = Dependencies.load!()
 
     children = [
       {Web.Endpoint, url: [host: config.phoenix[:host]]},
-      Auth.Account.InMemory
+      dependencies.auth[:account_gateway]
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
