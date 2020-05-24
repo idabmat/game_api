@@ -26,7 +26,9 @@ defmodule Auth.Token.Guardian do
   @impl Guardian
   def resource_from_claims(claims) do
     sub = claims["sub"]
-    Account.InMemory.get(sub)
+    dependencies = Dependencies.load!()
+    account_gateway = dependencies.auth[:account_gateway]
+    account_gateway.get(sub)
   end
 
   defp setup_vapor do
