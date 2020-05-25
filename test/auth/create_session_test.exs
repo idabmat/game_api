@@ -1,5 +1,5 @@
 defmodule Auth.CreateSessionTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
 
   alias Auth.Account
   alias Auth.Account.InMemory
