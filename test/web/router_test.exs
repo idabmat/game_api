@@ -3,6 +3,7 @@ defmodule Web.RouterTest do
 
   setup context do
     if context[:with_config] do
+      start_supervised!(Auth.Account.InMemory)
       Configuration.load!()
       Dependencies.load!()
 
@@ -36,7 +37,7 @@ defmodule Web.RouterTest do
 
   @tag :with_config
   test "return protected endpoint with credentials", %{conn: conn} do
-    account = %Auth.Account{provider: :foo, uid: "123"}
+    {:ok, account} = Auth.create_account(%{provider: :foo, uid: "123"})
     {:ok, token} = Auth.create_token(account)
 
     conn =
