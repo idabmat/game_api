@@ -17,12 +17,9 @@ defimpl Auth.CreateSession, for: Ueberauth.Failure do
 end
 
 defimpl Auth.CreateSession, for: Ueberauth.Auth do
-  alias Auth.Account
-
   def execute(%{info: info, provider: :google, uid: uid}, account_gateway: account_gateway) do
-    profile = %Account{email: info.email, image: info.image, uid: uid, provider: :google}
-    account_gateway.set(profile)
-    {:ok, profile}
+    data = %{email: info.email, image: info.image, uid: uid, provider: :google}
+    Auth.CreateAccount.execute(data, account_gateway: account_gateway)
   end
 
   def execute(any, options), do: Auth.CreateSession.Any.execute(any, options)
