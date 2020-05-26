@@ -4,6 +4,7 @@ defmodule Auth do
   """
 
   alias Auth.Account
+  alias Auth.CreateAccount
   alias Auth.CreateSession
   alias Auth.CreateToken
 
@@ -14,6 +15,10 @@ defmodule Auth do
   @spec create_token(any()) :: {:ok, String.t()} | {:error, [String.t()]}
   def create_token(account),
     do: CreateToken.execute(account, token_gateway: auth_gateways(:token_gateway))
+
+  @spec create_account(map()) :: {:ok, String.t()} | {:error, [String.t()]}
+  def create_account(data),
+    do: CreateAccount.execute(data, account_gateway: auth_gateways(:account_gateway))
 
   defp auth_gateways(gateway) do
     Application.get_env(:game_api, __MODULE__)[gateway]

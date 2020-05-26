@@ -31,6 +31,7 @@ defmodule GameApi.MixProject do
     [
       {:credo, "~> 1.3", only: [:dev], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:elixir_uuid, "~> 1.2"},
       {:jason, "~> 1.2"},
       {:guardian, "~> 2.0"},
       {:plug_cowboy, "~> 2.0"},
