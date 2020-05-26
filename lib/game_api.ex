@@ -11,7 +11,8 @@ defmodule GameApi do
 
     children = [
       {Web.Endpoint, url: [host: config.phoenix[:host]]},
-      dependencies.auth[:account_gateway]
+      dependencies.auth[:account_gateway],
+      dependencies.game[:lobby_gateway]
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

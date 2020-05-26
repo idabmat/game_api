@@ -26,5 +26,6 @@ defmodule Web.Router do
     pipe_through([:api, :api_auth])
 
     get("/sekret", Web.Controllers.Secret, :show)
+    post("/lobbies", Web.Controllers.Lobbies, :create)
   end
 end
