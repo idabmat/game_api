@@ -14,6 +14,6 @@ defmodule Game.Lobby do
     field(:players, [Player.t()], enforce: true)
   end
 
-  @callback set(t()) :: :ok | :error
+  @callback set(t()) :: :ok | {:error, :duplicate_name | :duplicate_account}
   @callback get(String.t()) :: t() | nil
 end

@@ -17,11 +17,12 @@ defmodule Game.Lobby.InMemory do
     Agent.get_and_update(__MODULE__, fn lobbies ->
       players = lobby.players
 
-      with ^players <- Enum.uniq_by(players, & &1.account_id),
-           ^players <- Enum.uniq_by(players, & &1.name) do
+      with {^players, :account} <- {Enum.uniq_by(players, & &1.account_id), :account},
+           {^players, :name} <- {Enum.uniq_by(players, & &1.name), :name} do
         {:ok, Map.put(lobbies, lobby.uid, lobby)}
       else
-        _ -> {:error, lobbies}
+        {_, :account} -> {{:error, :duplicate_account}, lobbies}
+        {_, :name} -> {{:error, :duplicate_name}, lobbies}
       end
     end)
   end

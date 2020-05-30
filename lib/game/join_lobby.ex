@@ -38,7 +38,8 @@ defmodule Game.JoinLobby do
 
     case lobby_gateway.set(updated_lobby) do
       :ok -> :ok
-      _ -> {:error, [{:player, [:already_joined]}]}
+      {:error, :duplicate_account} -> {:error, [{:player, [:already_joined]}]}
+      {:error, :duplicate_name} -> {:error, [{:player, [:name_taken]}]}
     end
   end
 

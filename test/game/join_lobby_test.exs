@@ -97,6 +97,6 @@ defmodule Game.JoinLobbyTest do
     :ok = execute(lobby_id, name, account_id, @gateways)
 
     assert execute(lobby_id, name, second_account_id, @gateways) ==
-             {:error, [{:player, [:already_joined]}]}
+             {:error, [{:player, [:name_taken]}]}
   end
 end
