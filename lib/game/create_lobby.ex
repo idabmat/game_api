@@ -25,9 +25,13 @@ defmodule Game.CreateLobby do
       ]
     }
 
-    case lobby_gateway.set(lobby) do
-      :ok -> {:ok, lobby}
-      _ -> {:error, [{:other, [:try_again]}]}
+    case lobby_gateway.get(lobby.uid) do
+      nil ->
+        lobby_gateway.set(lobby)
+        {:ok, lobby}
+
+      _ ->
+        {:error, [{:other, [:try_again]}]}
     end
   end
 

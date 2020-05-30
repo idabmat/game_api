@@ -15,4 +15,5 @@ defmodule Game.Lobby do
   end
 
   @callback set(t()) :: :ok | :error
+  @callback get(String.t()) :: t() | nil
 end
