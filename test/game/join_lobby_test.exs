@@ -40,23 +40,20 @@ defmodule Game.JoinLobbyTest do
   test "joining an existent lobby, with an non existing account, without a name" do
     args = %{lobby_id: fixture(:lobby).uid, account_id: "foo:123", player_name: ""}
 
-    assert execute(args, @gateways) ==
-             {:error, [{:player, [:not_found, :must_have_name]}]}
+    assert execute(args, @gateways) == {:error, [player: [:not_found, :must_have_name]]}
   end
 
   test "joining a non existent lobby, with an existing account, without a name" do
     account_id = fixture(:account) |> Account.key()
     args = %{lobby_id: "456", account_id: account_id, player_name: ""}
 
-    assert execute(args, @gateways) ==
-             {:error, [{:lobby, [:not_found]}, {:player, [:must_have_name]}]}
+    assert execute(args, @gateways) == {:error, [lobby: [:not_found], player: [:must_have_name]]}
   end
 
   test "joining a non existent lobby, with an non existing account, with a name" do
     args = %{lobby_id: "456", account_id: "foo:123", player_name: "Alice"}
 
-    assert execute(args, @gateways) ==
-             {:error, [{:lobby, [:not_found]}, {:player, [:not_found]}]}
+    assert execute(args, @gateways) == {:error, [lobby: [:not_found], player: [:not_found]]}
   end
 
   test "joining an existent lobby, with an existing account, with a name" do
