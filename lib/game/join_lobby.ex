@@ -8,11 +8,10 @@ defmodule Game.JoinLobby do
   alias Game.Player
 
   @type args :: %{lobby_id: String.t(), player_name: String.t(), account_id: String.t()}
-  @type errors :: [{:lobby, [atom()]} | {:player, [atom()]}]
+  @type errors :: [lobby: [atom()], player: [atom()]]
   @type gateways :: [lobby_gateway: module(), account_gateway: module()]
 
-  @spec execute(args(), gateways()) ::
-          {:error, errors()}
+  @spec execute(args(), gateways()) :: :ok | {:error, errors()}
   def execute(args, gateways) do
     account = get_resource(args.account_id, gateways[:account_gateway])
     lobby = get_resource(args.lobby_id, gateways[:lobby_gateway])
@@ -31,7 +30,7 @@ defmodule Game.JoinLobby do
     player_errors = validate_player(account, player_name)
     lobby_errors = validate_lobby(lobby)
 
-    [{:lobby, lobby_errors}, {:player, player_errors}]
+    [lobby: lobby_errors, player: player_errors]
     |> Enum.reject(fn {_key, value} -> Enum.empty?(value) end)
   end
 
@@ -41,8 +40,8 @@ defmodule Game.JoinLobby do
 
     case lobby_gateway.set(updated_lobby) do
       :ok -> :ok
-      {:error, :duplicate_account} -> {:error, [{:player, [:already_joined]}]}
-      {:error, :duplicate_name} -> {:error, [{:player, [:name_taken]}]}
+      {:error, :duplicate_account} -> {:error, [player: [:already_joined]]}
+      {:error, :duplicate_name} -> {:error, [player: [:name_taken]]}
     end
   end
 
