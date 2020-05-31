@@ -16,21 +16,23 @@ defmodule Game.JoinLobby do
   def execute(args, gateways) do
     account = get_resource(args.account_id, gateways[:account_gateway])
     lobby = get_resource(args.lobby_id, gateways[:lobby_gateway])
-    player_errors = validate_player(account, args.player_name)
-    lobby_errors = validate_lobby(lobby)
 
-    errors =
-      [{:lobby, lobby_errors}, {:player, player_errors}]
-      |> Enum.reject(fn {_key, value} -> Enum.empty?(value) end)
-
-    case errors do
+    case validate(lobby, account, args.player_name) do
       [] -> insert_player(lobby, args.account_id, args.player_name, gateways[:lobby_gateway])
-      _ -> {:error, errors}
+      errors -> {:error, errors}
     end
   end
 
   defp get_resource(resource_id, resource_gateway) do
     resource_gateway.get(resource_id)
+  end
+
+  defp validate(lobby, account, player_name) do
+    player_errors = validate_player(account, player_name)
+    lobby_errors = validate_lobby(lobby)
+
+    [{:lobby, lobby_errors}, {:player, player_errors}]
+    |> Enum.reject(fn {_key, value} -> Enum.empty?(value) end)
   end
 
   defp insert_player(lobby, account_id, player_name, lobby_gateway) do
