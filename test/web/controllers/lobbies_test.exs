@@ -6,15 +6,11 @@ defmodule Web.Controllers.LobbiesTest do
 
   setup context do
     if context[:with_config] do
+      Configuration.load!()
       start_supervised!(Auth.Account.InMemory)
       start_supervised!(Game.Lobby.InMemory)
-      Configuration.load!()
-      Dependencies.load!()
 
-      on_exit(fn ->
-        Configuration.unload()
-        Dependencies.unload()
-      end)
+      on_exit(&Configuration.unload/0)
     end
 
     :ok

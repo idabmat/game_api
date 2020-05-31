@@ -5,14 +5,16 @@ defmodule GameApi do
 
   use Application
 
+  @auth_config Application.get_env(:game_api, Auth)
+  @game_config Application.get_env(:game_api, Game)
+
   def start(_type, _args) do
     config = Configuration.load!()
-    dependencies = Dependencies.load!()
 
     children = [
       {Web.Endpoint, url: [host: config.phoenix[:host]]},
-      dependencies.auth[:account_gateway],
-      dependencies.game[:lobby_gateway]
+      @auth_config[:account_gateway],
+      @game_config[:lobby_gateway]
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -23,12 +23,14 @@ defmodule Auth.Token.Guardian do
   @impl Guardian
   def resource_from_claims(claims) do
     sub = claims["sub"]
-    dependencies = Application.get_env(:game_api, Auth)
-    account_gateway = dependencies[:account_gateway]
 
-    case account_gateway.get(sub) do
+    case account_gateway().get(sub) do
       nil -> {:error, :no_resource_found}
       account -> {:ok, account}
     end
+  end
+
+  defp account_gateway do
+    Application.get_env(:game_api, Auth)[:account_gateway]
   end
 end

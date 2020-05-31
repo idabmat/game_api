@@ -15,4 +15,12 @@ config :ueberauth, Ueberauth,
     google: {Ueberauth.Strategy.Google, []}
   ]
 
+config :game_api, Auth,
+  account_gateway: Auth.Account.InMemory,
+  token_gateway: Auth.Token.Guardian
+
+config :game_api, Game,
+  lobby_gateway: Game.Lobby.InMemory,
+  id_gateway: GameApi.ID.UUID
+
 import_config "#{Mix.env()}.exs"

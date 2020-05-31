@@ -5,12 +5,8 @@ defmodule Web.RouterTest do
     if context[:with_config] do
       start_supervised!(Auth.Account.InMemory)
       Configuration.load!()
-      Dependencies.load!()
 
-      on_exit(fn ->
-        Configuration.unload()
-        Dependencies.unload()
-      end)
+      on_exit(&Configuration.unload/0)
     end
 
     :ok
