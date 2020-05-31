@@ -7,15 +7,16 @@ defmodule Game.JoinLobby do
   alias Game.Lobby
   alias Game.Player
 
+  @type args :: %{lobby_id: String.t(), player_name: String.t(), account_id: String.t()}
   @type errors :: [{:lobby, [atom()]} | {:player, [atom()]}]
   @type gateways :: [lobby_gateway: module(), account_gateway: module()]
 
-  @spec execute(map(), gateways()) ::
+  @spec execute(args(), gateways()) ::
           {:error, errors()}
-  def execute(%{lobby_id: lobby_id, player_name: player_name, account_id: account_id}, gateways) do
-    account = get_resource(account_id, gateways[:account_gateway])
-    lobby = get_resource(lobby_id, gateways[:lobby_gateway])
-    player_errors = validate_player(account, player_name)
+  def execute(args, gateways) do
+    account = get_resource(args.account_id, gateways[:account_gateway])
+    lobby = get_resource(args.lobby_id, gateways[:lobby_gateway])
+    player_errors = validate_player(account, args.player_name)
     lobby_errors = validate_lobby(lobby)
 
     errors =
@@ -23,7 +24,7 @@ defmodule Game.JoinLobby do
       |> Enum.reject(fn {_key, value} -> Enum.empty?(value) end)
 
     case errors do
-      [] -> insert_player(lobby, account_id, player_name, gateways[:lobby_gateway])
+      [] -> insert_player(lobby, args.account_id, args.player_name, gateways[:lobby_gateway])
       _ -> {:error, errors}
     end
   end
