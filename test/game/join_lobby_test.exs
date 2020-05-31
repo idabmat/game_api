@@ -1,7 +1,7 @@
 defmodule Game.JoinLobbyTest do
   use ExUnit.Case, async: false
 
-  import Game.JoinLobby, only: [execute: 4]
+  import Game.JoinLobby, only: [execute: 2]
 
   alias Auth.Account
   alias Auth.Account.InMemory, as: InMemoryAccount
@@ -31,47 +31,40 @@ defmodule Game.JoinLobbyTest do
   end
 
   test "joining a non existent lobby, with an non existent account, without a name" do
-    lobby_id = "456"
-    account_id = "foo:123"
-    name = ""
+    args = %{lobby_id: "456", account_id: "foo:123", player_name: ""}
 
-    assert execute(lobby_id, name, account_id, @gateways) ==
-             {:error, [{:lobby, [:not_found]}, {:player, [:not_found, :must_have_name]}]}
+    assert execute(args, @gateways) ==
+             {:error, [lobby: [:not_found], player: [:not_found, :must_have_name]]}
   end
 
   test "joining an existent lobby, with an non existing account, without a name" do
-    lobby_id = fixture(:lobby).uid
-    account_id = "foo:123"
-    name = ""
+    args = %{lobby_id: fixture(:lobby).uid, account_id: "foo:123", player_name: ""}
 
-    assert execute(lobby_id, name, account_id, @gateways) ==
+    assert execute(args, @gateways) ==
              {:error, [{:player, [:not_found, :must_have_name]}]}
   end
 
   test "joining a non existent lobby, with an existing account, without a name" do
-    lobby_id = "456"
     account_id = fixture(:account) |> Account.key()
-    name = ""
+    args = %{lobby_id: "456", account_id: account_id, player_name: ""}
 
-    assert execute(lobby_id, name, account_id, @gateways) ==
+    assert execute(args, @gateways) ==
              {:error, [{:lobby, [:not_found]}, {:player, [:must_have_name]}]}
   end
 
   test "joining a non existent lobby, with an non existing account, with a name" do
-    lobby_id = "456"
-    account_id = "foo:123"
-    name = "Alice"
+    args = %{lobby_id: "456", account_id: "foo:123", player_name: "Alice"}
 
-    assert execute(lobby_id, name, account_id, @gateways) ==
+    assert execute(args, @gateways) ==
              {:error, [{:lobby, [:not_found]}, {:player, [:not_found]}]}
   end
 
   test "joining an existent lobby, with an existing account, with a name" do
     lobby_id = fixture(:lobby).uid
     account_id = fixture(:account) |> Account.key()
-    name = "Alice"
+    args = %{lobby_id: lobby_id, account_id: account_id, player_name: "Alice"}
 
-    assert execute(lobby_id, name, account_id, @gateways) == :ok
+    assert execute(args, @gateways) == :ok
     updated_lobby = InMemoryLobby.get(lobby_id)
     refute Enum.empty?(updated_lobby.players)
   end
@@ -79,24 +72,21 @@ defmodule Game.JoinLobbyTest do
   test "joining a lobby twice with a different name and same account" do
     lobby_id = fixture(:lobby).uid
     account_id = fixture(:account) |> Account.key()
-    name = "Alice"
-    second_name = "Bob"
+    first_args = %{lobby_id: lobby_id, account_id: account_id, player_name: "Alice"}
+    second_args = %{lobby_id: lobby_id, account_id: account_id, player_name: "Bob"}
 
-    :ok = execute(lobby_id, name, account_id, @gateways)
-
-    assert execute(lobby_id, second_name, account_id, @gateways) ==
-             {:error, [{:player, [:already_joined]}]}
+    assert execute(first_args, @gateways) == :ok
+    assert execute(second_args, @gateways) == {:error, [player: [:already_joined]]}
   end
 
   test "joining a lobby twice with a same name and different account" do
     lobby_id = fixture(:lobby).uid
     account_id = fixture(:account) |> Account.key()
     second_account_id = fixture(:account, provider: :bar) |> Account.key()
-    name = "Alice"
+    first_args = %{lobby_id: lobby_id, account_id: account_id, player_name: "Alice"}
+    second_args = %{lobby_id: lobby_id, account_id: second_account_id, player_name: "Alice"}
 
-    :ok = execute(lobby_id, name, account_id, @gateways)
-
-    assert execute(lobby_id, name, second_account_id, @gateways) ==
-             {:error, [{:player, [:name_taken]}]}
+    assert execute(first_args, @gateways) == :ok
+    assert execute(second_args, @gateways) == {:error, [player: [:name_taken]]}
   end
 end

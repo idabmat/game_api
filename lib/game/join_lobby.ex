@@ -10,9 +10,9 @@ defmodule Game.JoinLobby do
   @type errors :: [{:lobby, [atom()]} | {:player, [atom()]}]
   @type gateways :: [lobby_gateway: module(), account_gateway: module()]
 
-  @spec execute(String.t(), String.t(), String.t(), gateways()) ::
+  @spec execute(map(), gateways()) ::
           {:error, errors()}
-  def execute(lobby_id, player_name, account_id, gateways) do
+  def execute(%{lobby_id: lobby_id, player_name: player_name, account_id: account_id}, gateways) do
     account = get_resource(account_id, gateways[:account_gateway])
     lobby = get_resource(lobby_id, gateways[:lobby_gateway])
     player_errors = validate_player(account, player_name)
