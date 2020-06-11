@@ -4,6 +4,7 @@ defmodule Game.CreateLobby do
   """
 
   alias Auth.Account
+  alias Ecto.Changeset
   alias Game.Lobby
   alias Game.Player
 
@@ -29,12 +30,15 @@ defmodule Game.CreateLobby do
   end
 
   def execute(lobby_name, player_name, _account, _gateways) do
-    lobby_errors = validate(lobby_name)
-    player_errors = validate(player_name)
-
+    data = %{}
+    types = %{lobby_name: :string, player_name: :string}
+    params = %{lobby_name: lobby_name, player_name: player_name}
     errors =
-      [{:lobby_name, lobby_errors.errors}, {:player_name, player_errors.errors}]
-      |> Enum.reject(fn {_key, errors} -> Enum.empty?(errors) end)
+      {data, types}
+      |> Changeset.cast(params, Map.keys(types))
+      |> Changeset.validate_required([:lobby_name, :player_name], message: :cant_be_blank)
+      |> Map.get(:errors, [])
+      |> Enum.map(fn {field, {error, _validation}} -> {field, [error]} end)
 
     {:error, errors}
   end

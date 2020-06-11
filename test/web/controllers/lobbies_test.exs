@@ -86,8 +86,8 @@ defmodule Web.Controllers.LobbiesTest do
 
       assert json_response(conn, 400) == %{
                "errors" => %{
-                 "lobby_name" => ["required"],
-                 "player_name" => ["required"]
+                 "lobby_name" => ["cant_be_blank"],
+                 "player_name" => ["cant_be_blank"]
                }
              }
     end
