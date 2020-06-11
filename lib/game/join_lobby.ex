@@ -17,7 +17,7 @@ defmodule Game.JoinLobby do
     account = get_resource(args.account_id, gateways[:account_gateway])
     lobby = get_resource(args.lobby_id, gateways[:lobby_gateway])
 
-    case validate(lobby, account, args.player_name) do
+    case validate(%{lobby: lobby, account: account, player_name: args.player_name}) do
       [] -> insert_player(lobby, args.account_id, args.player_name, gateways[:lobby_gateway])
       errors -> {:error, errors}
     end
@@ -27,12 +27,24 @@ defmodule Game.JoinLobby do
     resource_gateway.get(resource_id)
   end
 
-  defp validate(lobby, account, player_name) do
-    player_errors = validate_player(account, player_name)
-    lobby_errors = validate_lobby(lobby)
+  @spec validate(%{lobby: nil | Lobby.t(), account: nil | Account.t(), player_name: String.t()}) ::
+          keyword([atom()])
+  defp validate(params) do
+    data = %{}
+    types = %{lobby: :map, account: :map, player_name: :string}
 
-    [lobby: lobby_errors, player: player_errors]
-    |> Enum.reject(fn {_key, value} -> Enum.empty?(value) end)
+    {data, types}
+    |> Changeset.cast(params, Map.keys(types))
+    |> Changeset.validate_required(:player_name, message: :must_have_name)
+    |> Changeset.validate_required([:lobby, :account], message: :not_found)
+    |> Map.get(:errors, [])
+    |> Enum.map(fn
+      {:lobby, {error, _validations}} -> {:lobby, error}
+      {_field, {error, _validations}} -> {:player, error}
+    end)
+    |> Enum.reduce([], fn {field, error}, errors ->
+      Keyword.update(errors, field, [error], &(&1 ++ [error]))
+    end)
   end
 
   defp insert_player(lobby, account_id, player_name, lobby_gateway) do
@@ -44,30 +56,5 @@ defmodule Game.JoinLobby do
       {:error, :duplicate_account} -> {:error, [player: [:already_joined]]}
       {:error, :duplicate_name} -> {:error, [player: [:name_taken]]}
     end
-  end
-
-  @spec validate_player(nil | Account.t(), nil | String.t()) :: [atom()]
-  defp validate_player(account, name) do
-    data = %{}
-    types = %{account: :map, name: :string}
-    params = %{account: account, name: name}
-    {data, types}
-    |> Changeset.cast(params, Map.keys(types))
-    |> Changeset.validate_required(:name, message: :must_have_name)
-    |> Changeset.validate_required(:account, message: :not_found)
-    |> Map.get(:errors, [])
-    |> Enum.map(fn {_field, {error, _validations}} -> error end)
-  end
-
-  @spec validate_lobby(nil | Lobby.t()) :: [atom()]
-  defp validate_lobby(lobby) do
-    data = %{}
-    types = %{lobby: :map}
-    params = %{lobby: lobby}
-    {data, types}
-    |> Changeset.cast(params, Map.keys(types))
-    |> Changeset.validate_required(:lobby, message: :not_found)
-    |> Map.get(:errors, [])
-    |> Enum.map(fn {_field, {error, _validations}} -> error end)
   end
 end
