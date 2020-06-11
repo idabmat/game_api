@@ -4,6 +4,7 @@ defmodule Game.JoinLobby do
   """
 
   alias Auth.Account
+  alias Ecto.Changeset
   alias Game.Lobby
   alias Game.Player
 
@@ -46,14 +47,27 @@ defmodule Game.JoinLobby do
   end
 
   @spec validate_player(nil | Account.t(), nil | String.t()) :: [atom()]
-  defp validate_player(nil, nil), do: [:not_found, :must_have_name]
-  defp validate_player(nil, ""), do: [:not_found, :must_have_name]
-  defp validate_player(_, nil), do: [:must_have_name]
-  defp validate_player(_, ""), do: [:must_have_name]
-  defp validate_player(nil, _), do: [:not_found]
-  defp validate_player(_, _), do: []
+  defp validate_player(account, name) do
+    data = %{}
+    types = %{account: :map, name: :string}
+    params = %{account: account, name: name}
+    {data, types}
+    |> Changeset.cast(params, Map.keys(types))
+    |> Changeset.validate_required(:name, message: :must_have_name)
+    |> Changeset.validate_required(:account, message: :not_found)
+    |> Map.get(:errors, [])
+    |> Enum.map(fn {_field, {error, _validations}} -> error end)
+  end
 
   @spec validate_lobby(nil | Lobby.t()) :: [atom()]
-  defp validate_lobby(nil), do: [:not_found]
-  defp validate_lobby(_), do: []
+  defp validate_lobby(lobby) do
+    data = %{}
+    types = %{lobby: :map}
+    params = %{lobby: lobby}
+    {data, types}
+    |> Changeset.cast(params, Map.keys(types))
+    |> Changeset.validate_required(:lobby, message: :not_found)
+    |> Map.get(:errors, [])
+    |> Enum.map(fn {_field, {error, _validations}} -> error end)
+  end
 end
