@@ -1,71 +1,74 @@
 defmodule Game.CreateLobbyTest do
   use ExUnit.Case, async: false
 
+  import Game.CreateLobby, only: [execute: 2]
+
+  alias Auth.Account
   alias Game.Lobby.InMemory
   alias GameApi.ID.Constant
-  import Game.CreateLobby, only: [execute: 2]
 
   setup do
     start_supervised!(InMemory)
     start_supervised!({Constant, [ids: ["1", "2", "2"]]})
-    account = %Auth.Account{provider: :foo, uid: "123"}
-    {:ok, %{account: account}}
+    :ok
   end
 
-  defp test_gateways, do: [lobby_gateway: InMemory, id_gateway: Constant]
+  @gateways [lobby_gateway: InMemory, id_gateway: Constant]
 
-  test "Creating a lobby without a lobby name nor an player name", %{account: account} do
-    args = %{lobby_name: "", player_name: "", account: account}
+  defp fixture(:account), do: %Account{provider: :foo, uid: "123"}
 
-    assert {:errors, errors} = execute(args, test_gateways())
+  test "Creating a lobby without a lobby name nor an player name" do
+    args = %{lobby_name: "", player_name: "", account: fixture(:account)}
+
+    assert {:errors, errors} = execute(args, @gateways)
     assert {:player_name, [:cant_be_blank]} in errors
     assert {:lobby_name, [:cant_be_blank]} in errors
     assert InMemory.size() == 0
   end
 
-  test "Creating a lobby without a player name", %{account: account} do
-    args = %{lobby_name: "My game", player_name: "", account: account}
+  test "Creating a lobby without a player name" do
+    args = %{lobby_name: "My game", player_name: "", account: fixture(:account)}
 
-    assert {:errors, [error]} = execute(args, test_gateways())
+    assert {:errors, [error]} = execute(args, @gateways)
     assert {:player_name, [:cant_be_blank]} == error
     assert InMemory.size() == 0
   end
 
-  test "Creating a lobby without a lobby name", %{account: account} do
-    args = %{lobby_name: "", player_name: "Alice", account: account}
+  test "Creating a lobby without a lobby name" do
+    args = %{lobby_name: "", player_name: "Alice", account: fixture(:account)}
 
-    assert {:errors, [error]} = execute(args, test_gateways())
+    assert {:errors, [error]} = execute(args, @gateways)
     assert {:lobby_name, [:cant_be_blank]} == error
     assert InMemory.size() == 0
   end
 
-  test "Creating a lobby with a lobby and a player name", %{account: account} do
-    args = %{lobby_name: "My game", player_name: "Alice", account: account}
+  test "Creating a lobby with a lobby and a player name" do
+    args = %{lobby_name: "My game", player_name: "Alice", account: fixture(:account)}
 
-    assert {:ok, lobby} = execute(args, test_gateways())
+    assert {:ok, lobby} = execute(args, @gateways)
     assert lobby.name == "My game"
     assert [player] = lobby.players
     assert player.name == "Alice"
     assert InMemory.size() == 1
   end
 
-  test "Creating a second lobby with the same name", %{account: account} do
-    args = %{lobby_name: "My game", player_name: "Alice", account: account}
+  test "Creating a second lobby with the same name" do
+    args = %{lobby_name: "My game", player_name: "Alice", account: fixture(:account)}
 
-    execute(args, lobby_gateway: InMemory, id_gateway: Constant)
+    execute(args, @gateways)
 
-    assert {:ok, duplicate} = execute(args, test_gateways())
+    assert {:ok, duplicate} = execute(args, @gateways)
     assert InMemory.size() == 2
   end
 
-  test "When there are ID collisions", %{account: account} do
+  test "When there are ID collisions" do
     # Skip the first facked id value
     Constant.generate()
-    args = %{lobby_name: "My game", player_name: "Alice", account: account}
+    args = %{lobby_name: "My game", player_name: "Alice", account: fixture(:account)}
 
-    execute(args, lobby_gateway: InMemory, id_gateway: Constant)
+    execute(args, @gateways)
 
-    assert {:errors, [error]} = execute(args, test_gateways())
+    assert {:errors, [error]} = execute(args, @gateways)
     assert {:other, [:try_again]} == error
     assert InMemory.size() == 1
   end
