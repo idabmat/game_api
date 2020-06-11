@@ -11,15 +11,21 @@ defmodule Game.JoinLobby do
   @type args :: %{lobby_id: String.t(), player_name: String.t(), account_id: String.t()}
   @type errors :: [lobby: [atom()], player: [atom()]]
   @type gateways :: [lobby_gateway: module(), account_gateway: module()]
+  @type response :: :ok | {:error, errors()}
 
-  @spec execute(args(), gateways()) :: :ok | {:error, errors()}
-  def execute(args, gateways) do
-    account = get_resource(args.account_id, gateways[:account_gateway])
-    lobby = get_resource(args.lobby_id, gateways[:lobby_gateway])
+  @spec execute(args(), gateways()) :: response()
+  def execute(%{lobby_id: lobby_id, player_name: player_name, account_id: account_id}, gateways) do
+    account = get_resource(account_id, gateways[:account_gateway])
+    lobby = get_resource(lobby_id, gateways[:lobby_gateway])
 
-    case validate(%{lobby: lobby, account: account, player_name: args.player_name}) do
-      [] -> insert_player(lobby, args.account_id, args.player_name, gateways[:lobby_gateway])
-      errors -> {:error, errors}
+    case validate(%{lobby: lobby, account: account, player_name: player_name}) do
+      [] ->
+        player = %Player{name: player_name, account_id: account_id}
+        updated_lobby = %Lobby{lobby | players: [player | lobby.players]}
+        insert_player(updated_lobby, gateways[:lobby_gateway])
+
+      errors ->
+        {:error, errors}
     end
   end
 
@@ -49,11 +55,8 @@ defmodule Game.JoinLobby do
     Keyword.update(errors, field, [error], &(&1 ++ [error]))
   end
 
-  defp insert_player(lobby, account_id, player_name, lobby_gateway) do
-    player = %Player{name: player_name, account_id: account_id}
-    updated_lobby = %Lobby{lobby | players: [player | lobby.players]}
-
-    case lobby_gateway.set(updated_lobby) do
+  defp insert_player(lobby, lobby_gateway) do
+    case lobby_gateway.set(lobby) do
       :ok -> :ok
       {:error, :duplicate_account} -> {:error, [player: [:already_joined]]}
       {:error, :duplicate_name} -> {:error, [player: [:name_taken]]}

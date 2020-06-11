@@ -26,7 +26,10 @@ defmodule Game.CreateLobby do
   end
 
   @spec build_lobby(args(), module()) :: Lobby.t()
-  defp build_lobby(%{lobby_name: lobby_name, player_name: player_name, account: account}, id_gateway) do
+  defp build_lobby(
+         %{lobby_name: lobby_name, player_name: player_name, account: account},
+         id_gateway
+       ) do
     %Lobby{
       uid: id_gateway.generate(),
       name: lobby_name,
