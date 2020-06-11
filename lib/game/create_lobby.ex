@@ -25,14 +25,7 @@ defmodule Game.CreateLobby do
       ]
     }
 
-    case lobby_gateway.get(lobby.uid) do
-      nil ->
-        lobby_gateway.set(lobby)
-        {:ok, lobby}
-
-      _ ->
-        {:error, [{:other, [:try_again]}]}
-    end
+    insert_lobby(lobby, lobby_gateway)
   end
 
   def execute(lobby_name, player_name, _account, _gateways) do
@@ -44,6 +37,18 @@ defmodule Game.CreateLobby do
       |> Enum.reject(fn {_key, errors} -> Enum.empty?(errors) end)
 
     {:error, errors}
+  end
+
+  @spec insert_lobby(Lobby.t(), module()) :: {:ok, Lobby.t()} | {:error, keyword([atom()])}
+  defp insert_lobby(lobby, lobby_gateway) do
+    case lobby_gateway.get(lobby.uid) do
+      nil ->
+        lobby_gateway.set(lobby)
+        {:ok, lobby}
+
+      _ ->
+        {:error, [{:other, [:try_again]}]}
+    end
   end
 
   @spec validate(any()) :: %{value: any(), errors: [atom()]}
