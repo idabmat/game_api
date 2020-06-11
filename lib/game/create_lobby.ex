@@ -33,6 +33,7 @@ defmodule Game.CreateLobby do
     data = %{}
     types = %{lobby_name: :string, player_name: :string}
     params = %{lobby_name: lobby_name, player_name: player_name}
+
     errors =
       {data, types}
       |> Changeset.cast(params, Map.keys(types))
@@ -54,23 +55,4 @@ defmodule Game.CreateLobby do
         {:error, [{:other, [:try_again]}]}
     end
   end
-
-  @spec validate(any()) :: %{value: any(), errors: [atom()]}
-  defp validate(value) do
-    %{value: value, errors: []}
-    |> validate_presence()
-    |> validate_filled()
-  end
-
-  @spec validate_presence(%{value: any(), errors: [atom()]}) :: %{value: any(), errors: [atom()]}
-  defp validate_presence(%{value: nil, errors: errors}),
-    do: %{value: nil, errors: [:required | errors]}
-
-  defp validate_presence(%{value: value, errors: errors}), do: %{value: value, errors: errors}
-
-  @spec validate_filled(%{value: any(), errors: [atom()]}) :: %{value: any(), errors: [atom()]}
-  defp validate_filled(%{value: "", errors: errors}),
-    do: %{value: "", errors: [:cant_be_blank | errors]}
-
-  defp validate_filled(%{value: value, errors: errors}), do: %{value: value, errors: errors}
 end
