@@ -38,14 +38,14 @@ defmodule Game.JoinLobby do
     |> Changeset.validate_required(:player_name, message: :must_have_name)
     |> Changeset.validate_required([:lobby, :account], message: :not_found)
     |> Map.get(:errors, [])
-    |> Enum.map(fn
-      {:lobby, {error, _validations}} -> {:lobby, error}
-      {_field, {error, _validations}} -> {:player, error}
-    end)
+    |> Enum.map(&rename_error_keys/1)
     |> Enum.reduce([], fn {field, error}, errors ->
       Keyword.update(errors, field, [error], &(&1 ++ [error]))
     end)
   end
+
+  defp rename_error_keys({:lobby, {error, _validations}}), do: {:lobby, error}
+  defp rename_error_keys({_field, {error, _validations}}), do: {:player, error}
 
   defp insert_player(lobby, account_id, player_name, lobby_gateway) do
     player = %Player{name: player_name, account_id: account_id}
