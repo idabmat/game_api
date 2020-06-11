@@ -4,9 +4,8 @@ defmodule Game do
   """
 
   alias Game.CreateLobby
-  alias Game.Lobby
 
-  @spec create_lobby(CreateLobby.args()) :: {:ok, Lobby.t()} | {:errors, CreateLobby.errors()}
+  @spec create_lobby(CreateLobby.args()) :: CreateLobby.response()
   def create_lobby(args) do
     CreateLobby.execute(args,
       lobby_gateway: game_gateways(:lobby_gateway),
