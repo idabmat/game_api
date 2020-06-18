@@ -27,5 +27,6 @@ defmodule Web.Router do
 
     get("/sekret", Web.Controllers.Secret, :show)
     post("/lobbies", Web.Controllers.Lobbies, :create)
+    patch("/lobbies/:lobby_id", Web.Controllers.Lobbies, :update)
   end
 end

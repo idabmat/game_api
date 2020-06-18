@@ -4,12 +4,20 @@ defmodule Game do
   """
 
   alias Game.CreateLobby
+  alias Game.JoinLobby
 
   @spec create_lobby(CreateLobby.args()) :: CreateLobby.response()
   def create_lobby(args) do
     CreateLobby.execute(args,
       lobby_gateway: game_gateways(:lobby_gateway),
       id_gateway: game_gateways(:id_gateway)
+    )
+  end
+
+  @spec join_lobby(JoinLobby.args()) :: JoinLobby.response()
+  def join_lobby(args) do
+    JoinLobby.execute(args,
+      lobby_gateway: game_gateways(:lobby_gateway)
     )
   end
 

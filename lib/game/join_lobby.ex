@@ -8,21 +8,24 @@ defmodule Game.JoinLobby do
   alias Game.Lobby
   alias Game.Player
 
-  @type args :: %{lobby_id: String.t(), player_name: String.t(), account_id: String.t()}
+  @type args :: %{lobby_id: String.t(), player_name: String.t(), account: Account.t()}
   @type errors :: [lobby: [atom()], player: [atom()]]
-  @type gateways :: [lobby_gateway: module(), account_gateway: module()]
-  @type response :: :ok | {:error, errors()}
+  @type gateways :: [lobby_gateway: module()]
+  @type response :: {:ok, Lobby.t()} | {:error, errors()}
 
   @spec execute(args(), gateways()) :: response()
-  def execute(%{lobby_id: lobby_id, player_name: player_name, account_id: account_id}, gateways) do
-    account = get_resource(account_id, gateways[:account_gateway])
+  def execute(%{lobby_id: lobby_id, player_name: player_name, account: account}, gateways) do
     lobby = get_resource(lobby_id, gateways[:lobby_gateway])
 
-    case validate(%{lobby: lobby, account: account, player_name: player_name}) do
+    case validate(%{lobby: lobby, player_name: player_name}) do
       [] ->
-        player = %Player{name: player_name, account_id: account_id}
-        updated_lobby = %Lobby{lobby | players: [player | lobby.players]}
-        insert_player(updated_lobby, gateways[:lobby_gateway])
+        player = %Player{name: player_name, account_id: {account.provider, account.uid}}
+        updated_lobby = %Lobby{lobby | players: lobby.players ++ [player]}
+
+        case insert_player(updated_lobby, gateways[:lobby_gateway]) do
+          :ok -> {:ok, updated_lobby}
+          error -> error
+        end
 
       errors ->
         {:error, errors}
@@ -33,16 +36,16 @@ defmodule Game.JoinLobby do
     resource_gateway.get(resource_id)
   end
 
-  @spec validate(%{lobby: nil | Lobby.t(), account: nil | Account.t(), player_name: String.t()}) ::
+  @spec validate(%{lobby: nil | Lobby.t(), player_name: String.t()}) ::
           keyword([atom()])
   defp validate(params) do
     data = %{}
-    types = %{lobby: :map, account: :map, player_name: :string}
+    types = %{lobby: :map, player_name: :string}
 
     {data, types}
     |> Changeset.cast(params, Map.keys(types))
     |> Changeset.validate_required(:player_name, message: :must_have_name)
-    |> Changeset.validate_required([:lobby, :account], message: :not_found)
+    |> Changeset.validate_required(:lobby, message: :not_found)
     |> Map.get(:errors, [])
     |> Enum.map(&rename_error_keys/1)
     |> Enum.reduce([], &merge_error_keys/2)
