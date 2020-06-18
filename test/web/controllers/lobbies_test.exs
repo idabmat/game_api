@@ -125,7 +125,7 @@ defmodule Web.Controllers.LobbiesTest do
         |> put_req_header("authorization", "Bearer #{token}")
         |> patch("/lobbies/123", @valid_join_attrs)
 
-      assert json_response(conn, 404) == %{"errors" => %{"lobby" => ["not_found"]}}
+      assert json_response(conn, 422) == %{"errors" => %{"lobby" => ["not_found"]}}
     end
 
     test "as an existing authenticated user who already joined lobby", %{conn: conn} do
@@ -137,7 +137,7 @@ defmodule Web.Controllers.LobbiesTest do
         |> put_req_header("authorization", "Bearer #{token}")
         |> patch("/lobbies/#{lobby_id}", @valid_join_attrs)
 
-      assert json_response(conn, 404) == %{"errors" => %{"player" => ["already_joined"]}}
+      assert json_response(conn, 422) == %{"errors" => %{"player" => ["already_joined"]}}
     end
 
     test "as an existing authenticated user with invalid args", %{conn: conn} do
@@ -151,7 +151,7 @@ defmodule Web.Controllers.LobbiesTest do
         |> put_req_header("authorization", "Bearer #{token}")
         |> patch("/lobbies/#{lobby_id}", @invalid_join_atts)
 
-      assert json_response(conn, 404) == %{"errors" => %{"player" => ["name_taken"]}}
+      assert json_response(conn, 422) == %{"errors" => %{"player" => ["name_taken"]}}
     end
 
     test "as an existing authenticated user with valid args", %{conn: conn} do

@@ -49,7 +49,7 @@ defmodule Web.Controllers.Lobbies do
 
         conn
         |> put_resp_content_type("application/json")
-        |> send_resp(404, Jason.encode!(%{errors: errors}))
+        |> send_resp(422, Jason.encode!(%{errors: errors}))
     end
   end
 end
